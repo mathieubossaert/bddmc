@@ -33,3 +33,8 @@ SELECT now()::date as date, count(distinct id_contrat) as nb_contrats, count(dis
   FROM compensation.contrat_de_gestion
   JOIN compensation.exploitant USING(id_exploitant)
   WHERE date_effet<=now()::date
+  
+CREATE VIEW reporting.duree_moyenne_convention AS
+SELECT now()::date as date, count(distinct id_contrat) as nb_contrats, avg(duree_en_mois) AS duree_moyenne_mois
+  FROM compensation.contrat_de_gestion
+  WHERE date_effet<=now()::date
