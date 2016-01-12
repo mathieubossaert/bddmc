@@ -20,3 +20,10 @@ CREATE VIEW reporting.cout_total_euros_mae_signees AS
 SELECT now()::date as date, sum(indemnite_exploitant_euros) as cout_total_mae_signees
   FROM compensation.unite_de_gestion JOIN compensation.contrat_de_gestion USING(id_contrat)
   WHERE date_effet<=now()::date
+
+CREATE VIEW reporting.cout_moyen_ha_par_exploitant AS
+SELECT now()::date as date, raison_sociale, avg(indemnite_exploitant_euros_ha) as cout_moyen_ha
+  FROM compensation.unite_de_gestion JOIN compensation.contrat_de_gestion USING(id_contrat)
+  JOIN compensation.exploitant USING(id_exploitant)
+  WHERE date_effet<=now()::date
+  GROUP BY raison_sociale
