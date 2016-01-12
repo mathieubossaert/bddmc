@@ -27,3 +27,9 @@ SELECT now()::date as date, raison_sociale, avg(indemnite_exploitant_euros_ha) a
   JOIN compensation.exploitant USING(id_exploitant)
   WHERE date_effet<=now()::date
   GROUP BY raison_sociale
+
+CREATE VIEW reporting.nb_moyen_contrat_par_exploitant AS
+SELECT now()::date as date, count(distinct id_contrat) as nb_contrats, count(distinct id_exploitant) as nb_exploitant, CASE WHEN count(id_exploitant)>0 THEN count(distinct id_contrat)::numeric/count(distinct id_exploitant)::numeric ELSE NULL END as nb_moyen_contrat_par_exploitant
+  FROM compensation.contrat_de_gestion
+  JOIN compensation.exploitant USING(id_exploitant)
+  WHERE date_effet<=now()::date
