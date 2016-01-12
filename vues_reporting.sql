@@ -10,8 +10,13 @@ SELECT now()::date AS date, count(id_exploitant) as nb_exploitants, count(id_con
   FROM compensation.contrat_de_gestion
   WHERE daterange(date_effet, date_expiration, '[]') @>now()::date;
 
-CREATE VIEW reporting.nb_ha_en_convention_pare_code_mesure AS
+CREATE VIEW reporting.nb_ha_en_convention_par_code_mesure AS
 SELECT now()::date as date, code_mesure, st_area2d(st_union(geometrie))::numeric/10000 as surf_tota_ha
   FROM compensation.unite_de_gestion JOIN compensation.contrat_de_gestion USING(id_contrat)
   WHERE daterange(date_effet, date_expiration, '[]') @>now()::date
   GROUP By code_mesure;
+
+CREATE VIEW reporting.cout_total_euros_mae_signees AS
+SELECT now()::date as date, sum(indemnite_exploitant_euros) as cout_total_mae_signees
+  FROM compensation.unite_de_gestion JOIN compensation.contrat_de_gestion USING(id_contrat)
+  WHERE date_effet<=now()::date
