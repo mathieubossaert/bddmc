@@ -39,4 +39,4 @@ CREATE OR REPLACE VIEW reporting.duree_moyenne_convention AS
  SELECT now()::date AS date, 
     count(DISTINCT contrat_de_gestion.id_contrat) AS nb_contrats, round(avg(contrat_de_gestion.duree_en_mois),2) AS duree_moyenne_mois
    FROM compensation.contrat_de_gestion
-  WHERE contrat_de_gestion.date_effet <= now()::date;
+  WHERE COALESCE(contrat_de_gestion.date_effet,contrat_de_gestion.date_signature) <= now()::date;
