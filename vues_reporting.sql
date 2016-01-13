@@ -51,3 +51,10 @@ CREATE OR REPLACE VIEW reporting.surface_moyenne_ug AS
    FROM compensation.unite_de_gestion
    JOIN compensation.contrat_de_gestion USING (id_contrat)
   WHERE COALESCE(contrat_de_gestion.date_effet,contrat_de_gestion.date_signature) <= now()::date;
+
+CREATE OR REPLACE VIEW reporting.surface_objectifs_de_gestion AS 
+ SELECT now()::date AS date, objectifs_de_gestion, count(distinct id_ug) as nb_ug, count(distinct id_contrat) as nb_contrats, round(sum(st_area2d(geometrie)/10000)::numeric,2) AS tot_surf_ha
+   FROM compensation.unite_de_gestion
+   JOIN compensation.contrat_de_gestion USING (id_contrat)
+  WHERE COALESCE(contrat_de_gestion.date_effet,contrat_de_gestion.date_signature) <= now()::date
+  GROUP BY objectifs_de_gestion;
