@@ -22,8 +22,7 @@ SELECT now()::date as date, sum(indemnite_exploitant_euros) as cout_total_mae_si
   WHERE COALESCE(contrat_de_gestion.date_effet,contrat_de_gestion.date_signature) <=now()::date;
 
 CREATE OR REPLACE VIEW reporting.cout_moyen_ha_par_exploitant AS 
- SELECT now()::date AS date, exploitant.raison_sociale, 
-    round(avg(unite_de_gestion.indemnite_exploitant_euros_ha),2) AS cout_moyen_ha
+ SELECT now()::date AS date, exploitant.raison_sociale, round(avg(unite_de_gestion.indemnite_exploitant_euros_ha),2) AS cout_moyen_ha
    FROM compensation.unite_de_gestion
    JOIN compensation.contrat_de_gestion USING (id_contrat)
    JOIN compensation.exploitant USING (id_exploitant)
@@ -36,7 +35,8 @@ SELECT now()::date as date, count(distinct id_contrat) as nb_contrats, count(dis
   JOIN compensation.exploitant USING(id_exploitant)
   WHERE COALESCE(contrat_de_gestion.date_effet,contrat_de_gestion.date_signature) <=now()::date;
   
-CREATE OR REPLACE VIEW reporting.duree_moyenne_convention AS
-SELECT now()::date as date, count(distinct id_contrat) as nb_contrats, avg(duree_en_mois) AS duree_moyenne_mois
-  FROM compensation.contrat_de_gestion
-  WHERE COALESCE(contrat_de_gestion.date_effet,contrat_de_gestion.date_signature) <=now()::date;
+CREATE OR REPLACE VIEW reporting.duree_moyenne_convention AS 
+ SELECT now()::date AS date, 
+    count(DISTINCT contrat_de_gestion.id_contrat) AS nb_contrats, round(avg(contrat_de_gestion.duree_en_mois),2) AS duree_moyenne_mois
+   FROM compensation.contrat_de_gestion
+  WHERE contrat_de_gestion.date_effet <= now()::date;
