@@ -45,3 +45,9 @@ CREATE OR REPLACE VIEW reporting.echeance_contrat AS
  SELECT id_contrat, extract(day from(date_expiration::timestamp - now()::timestamp)) as echeance_en_jours
    FROM compensation.contrat_de_gestion
   ORDER BY 2 ASC;
+
+CREATE OR REPLACE VIEW reporting.surface_moyenne_ug AS 
+ SELECT now()::date AS date, count(id_ug) as nb_ug, round(sum(st_area2d(geometrie)/10000)::numeric,2) AS tot_surf_ha, round(avg(st_area2d(geometrie)/10000)::numeric,2) AS avg_surf_ha
+   FROM compensation.unite_de_gestion
+   JOIN compensation.contrat_de_gestion USING (id_contrat)
+  WHERE COALESCE(contrat_de_gestion.date_effet,contrat_de_gestion.date_signature) <= now()::date;
